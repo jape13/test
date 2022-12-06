@@ -1,0 +1,949 @@
+<!--
+ * 严重鄙视任何盗窃、复制代码行为！
+ * 引用、借鉴本站功能或布局的，请在页面中标注或附上链接，谢谢.
+ * 本站已在github开源，只需保留版权声明即可免费使用：https://github.com/xiaodai945/WEBJIKE
+-->
+<!DOCTYPE html><!-- This web page is copied by "https://bazhan.wang" -->
+<html lang="zh-cn">
+
+<head>
+    <meta charset="utf-8">
+    <!--头部信息-->
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>小呆导航 &nbsp;- 可自定义的简洁网址导航</title>
+    <meta name="keywords" content="小呆导航,网址导航,前端导航,设计师导航,CG导航,工作导航,自定义导航,简洁导航,网站大全">
+    <meta name="description" content="小呆导航是一个可自定义的简洁多领域网址导航，收录了前端开发、设计师、影视后期、日常办公等领域优质网站，为广大用户提供高效率的上网导航服务。">
+    <!-- zui -->
+    <link rel="shortcut icon" type="image/x-icon" href="img/favicon.png">
+    <link rel="stylesheet" href="css/zui.min.css">
+    <link href="css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/index-style.css" rel="stylesheet">
+    <script src="js/md5.js"></script>
+
+</head>
+
+<body>
+
+    <link rel="stylesheet" type="text/css" href="css/cleanslate.min.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <!-- template start -->
+
+    <div id="ss-auth" class="ss-auth cleanslate" v-bind:style="{ display: form ? '' : 'none !important' }" style="display: none !important;">
+        <header class="popupHeader">
+            <span class="header_title">{{ title }}</span>
+            <span class="modal_close" @click="closeModal"></span>
+        </header>
+
+        <section class="popupBody">
+            <!-- Social form -->
+            <div class="social_login" v-bind:style="{ display: form == 'social' ? '' : 'none !important' }" style="display: none !important;">
+                <div>
+                    <a v-bind:href="apiUrlWeixin" v-bind:style="{ display: apiUrlWeixin ? '' : 'none !important' }" style="display: none !important;" class="social_box">
+                        <span class="icon weixin"></span>
+                        <span class="icon_title">微信登录</span>
+                    </a>
+
+                    <a v-bind:href="apiUrlQq" v-bind:style="{ display: apiUrlQq ? '' : 'none !important' }" style="display: none !important;" class="social_box">
+                        <span class="icon qq"></span>
+                        <span class="icon_title">QQ 登录</span>
+                    </a>
+
+                    <a v-bind:href="apiUrlWeibo" v-bind:style="{ display: apiUrlWeibo ? '' : 'none !important' }" style="display: none !important;" class="social_box">
+                        <span class="icon weibo"></span>
+                        <span class="icon_title">微博登录</span>
+                    </a>
+                </div>
+
+                <div class="centeredText">
+                    <span>使用账号密码登录</span>
+                </div>
+
+                <div class="action_btns">
+                    <div class="one_half">
+                        <a href="javascript:;" @click="openLoginModal" class="btn">登 录</a>
+                    </div>
+                    <div class="one_half last">
+                        <a href="javascript:;" @click="openRegisterModal" class="btn">注 册</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Login form -->
+            <div data-vv-scope="login_form" v-bind:style="{ display: form == 'login' ? '' : 'none !important' }" style="display: none !important;">
+
+                <div class="errorText" v-bind:style="{ display: errorMessage ? '' : 'none !important' }" style="display: none !important;">
+                    {{ errorMessage }}
+                </div>
+
+                <label>用户名/邮箱/手机</label>
+                <input type="text" name="account" v-validate="'required'" :class="{'is-danger': errors.has('login_form.account') }" v-model="login.account">
+                <br>
+
+                <label>密码</label>
+                <input type="password" name="password" v-validate="'required'" :class="{'is-danger': errors.has('login_form.password') }" v-model="login.password">
+                <br>
+
+                <!-- <div class="checkbox">
+        <input id="remember" type="checkbox" />
+        <label for="remember">记住用户名</label>
+      </div> -->
+
+                <div class="action_btns">
+                    <div class="one_half">
+                        <a href="javascript:;" @click="closeModal" class="btn back_btn">取消</a>
+                    </div>
+                    <div class="one_half last">
+                        <a href="javascript:;" @click="loginSubmit" class="btn btn_red">登录</a>
+                    </div>
+                </div>
+
+                <!-- <a href="javascript:;" @click="openFindPasswordModal" class="forgot_password">忘记密码？</a> -->
+            </div>
+
+            <!-- Register Form -->
+            <div data-vv-scope="register_form" v-bind:style="{ display: form == 'register' ? '' : 'none !important' }" style="display: none !important;">
+
+                <div class="errorText" v-bind:style="{ display: errorMessage ? '' : 'none !important' }" style="display: none !important;">
+                    {{ errorMessage }}
+                </div>
+
+                <label>用户名</label>
+                <input type="text" name="userName" v-validate="'required'" :class="{'is-danger': errors.has('register_form.userName') }" v-model="register.userName">
+                <br>
+
+                <label>姓名</label>
+                <input type="text" name="displayName" v-validate="'required'" :class="{'is-danger': errors.has('register_form.displayName') }" v-model="register.displayName">
+                <br>
+
+                <label>邮箱</label>
+                <input type="email" name="email" v-validate="'required|email'" :class="{'is-danger': errors.has('register_form.email') }" v-model="register.email">
+                <br>
+
+                <label>手机号</label>
+                <input type="text" name="mobile" v-validate="{ required: true, regex: /^((13|14|15|16|17|18|19)[0-9]{1}\d{8})$/ }" :class="{'is-danger': errors.has('register_form.mobile') }" v-model="register.mobile">
+                <br>
+
+                <label>密码</label>
+                <input type="password" name="password" v-validate="'required'" :class="{'is-danger': errors.has('register_form.password') }" v-model="register.password">
+                <br>
+
+                <div class="action_btns">
+                    <div class="one_half">
+                        <a href="javascript:;" @click="closeModal" class="btn back_btn">取 消</a>
+                    </div>
+                    <div class="one_half last">
+                        <a href="javascript:;" @click="registerSubmit" class="btn btn_red">注 册</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Register Success Form -->
+            <div class="user_form" v-bind:style="{ display: form == 'registerSuccess' ? '' : 'none !important' }" style="display: none !important;">
+                <div class="successText">
+                    {{ registerSuccessMessage }}
+                </div>
+
+                <div class="action_btns">
+                    <div class="one_half">
+                        <a href="javascript:;" @click="closeModal" class="btn back_btn">关 闭</a>
+                    </div>
+                    <div class="one_half last">
+                        <a href="javascript:;" @click="openLoginModal" class="btn">登 录</a>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </div>
+
+
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/vue-2.1.10.min.js"></script>
+    <script type="text/javascript" src="js/vee-validate-2.0.3.js"></script>
+    <script type="text/javascript" src="js/es6-promise.auto.min.js"></script>
+    <script type="text/javascript" src="js/axios-0.17.1.min.js"></script>
+    <script type="text/javascript">
+        var authData = {
+            apiUrlRegister: '/api/SS.Login/actions/register',
+            apiUrlLogin: '/api/SS.Login/actions/login',
+            apiUrlLogout: '/api/SS.Login/actions/logout',
+            apiUrlWeixin: '/api/SS.Login/auth/Weixin?redirectUrl=' + encodeURIComponent(location.href),
+            apiUrlWeibo: '/api/SS.Login/auth/Weibo?redirectUrl=' + encodeURIComponent(location.href),
+            apiUrlQq: '/api/SS.Login/auth/Qq?redirectUrl=' + encodeURIComponent(location.href),
+            registerSuccessMessage: '恭喜，注册用户成功',
+            loginRedirectUrl: '?success=true',
+            logoutRedirectUrl: '?logout=true',
+        };
+    </script>
+    <script type="text/javascript" src="js/script.js"></script>
+    <script src="js/lodash-4.17.4.min.js" type="text/javascript"></script>
+    <script src="js/stlClient.js" type="text/javascript"></script>
+
+    <!--[if lt IE 8]>
+    <div class="alert alert-danger">您正在使用 <strong>过时的</strong> 浏览器. 是时候 <a href="http://browsehappy.com/">更换一个更好的浏览器</a> 来提升用户体验.</div>
+    <![endif]-->
+    <!--头部导航条-->
+    <header>
+        <div class="main">
+            <div class="logo">
+                <a href="/index.html">
+                    <img src="img/logo.png">
+                    <span>小呆导航</span>
+                </a>
+            </div>
+            <nav class="nav">
+                <ul>
+
+                    <li><a class="duty-nav" href="/dutynav.html">职业导航<i class="fa fa-caret-down"></i></a></li>
+
+
+                    <li><a href="/course.html">教程资源</a></li>
+
+                    <li><a href="/blog.html">个人博客</a></li>
+
+                    <li><a href="/liuyan.html">在线留言</a></li>
+
+                    <li><a href="/link.html">友情链接</a></li>
+
+                    <li><a href="/adout.html">关于本站</a></li>
+
+                </ul>
+            </nav>
+            <div class="user visible-lg">
+
+                <span id="ajaxElement_1_703_loading"></span>
+                <span id="ajaxElement_1_703_success" style="display: none"></span>
+                <span id="ajaxElement_1_703_failure" style="display: none"></span>
+                <script type="text/javascript" language="javascript">
+                    function stlDynamicajaxElement_1_703(page) {
+                        document.getElementById('ajaxElement_1_703_loading').style.display = 'inline-block';
+                        document.getElementById('ajaxElement_1_703_success').style.display = 'none';
+                        document.getElementById('ajaxElement_1_703_failure').style.display = 'none';
+
+                        stlClient.post('/api/sys/stl/actions/if?' + StlClient.getQueryString(), {
+                            value: '7ZNeUmMAG5GYfANbTQyniPqfGj6KbS9bQE851UDrCPV8jcKpGK7RQASOJqZA9FFIvU7wxy2VYpyETFw8Cs0add0q8TyvPZLhHIlILhIO89Na9GJqfxYZ0add0oIn50add0gfogCHPYJMINC4Snob3x0add0u0JUuGjXcAsAjWDF4P0add0s4QhXZwXlP5xNOyHHTebwBoSZ87j4mtLTFE4JTURDhZWObCQ0slash0ZZUpU1je0SA1yUfcv0d0add0aScD30tDYzIKaHc2TUWEQhl9lg0slash0Q3ZTpRvIQm8Teix6YyjSQqWrCe10add0uuy0add06C0sIXdTwSwQdCET4UUUptp0BpLwiOPvEa9fD4a7J2jC9jST0add0yCqxspXkzjzDOHTyh2JrfNulFMFfw0ZHwfnWOowsmjP2P9rSMRRbQwQpe9ZXSUqLzzOgqKBFi0J50slash01Y8yMY1zc50add0tRj7Xs3sPhPaJl6ss7eCuBd0slash082aBwN5MAiOJuP8bHXr3dclv4oDmMZjzzamPmn1YksltBmavL0v0U0jg4pyecYXdlg80V0add0mDeuky6F8Oq0SD7TOfIehTMPYtDqVu4Fasgr6w0add00add0t7hLB4kvaLmj7JJ0add0Qjshks0yOtOheoj3AIh4gUHyt7hCaXh8r9U5X18tWRbaY8tb5eE87lwrPiF0add0Xd8PEHfjx2Qrc00slash0erOJEEmXrEEOoIK8svwYZg0slash03YteXiG4EDoD1r87RAp0add0xsiqCbmMc3K1Ql33W00slash0X2GAf2sePNkFKLyt7yoRgKIVdutvsDRa3qpdqINbMYUwXgf2GOuvOwgTn6EdLbTvZwbpjFBEt3rUeAPZn0de0slash0DRLVS0add0gVfAweeUN7L8Ge93F4XsHqMIX8QpytsirVIAaogRzIOcpCXrJI4e4j6z60slash05qdQZl0slash0LsmZN0slash0M343wTLUnseBv4XociK3a1T0add01zUTeK8G9radyEJ1zkdER7yHDHSFxx0Wq1SnxFptfXVgpBRaNQwok4FJpYzq0slash0oiLzU9jk7JoUQyFcPp3h0add0fH7HbG1g8S6EmYr9xh5CkO8UBRFYUPr7SOH0slash0XN2FLOjSTtuyU6MIwKZkrpty0add0zHdecqLMyVC0add0NPZCmVZVHjAtEMd4ZQ6NQQLYhC0slash0KJywr7NJaH59WIIE1IGb14o0add00vFukFBQAzzk4SfVEsCtUaEO130add05BBolaNts1aJ0add0nkKlVNjSi2H0slash0qfoT9K0slash0SQVFgDFaf7jbIj3imu6e000add0KQjGEFKMMMuhtBIva0add0YIGqIvn0slash0yF0add0eNJcuCMF0slash0NhU1dljAx5qegcg9z9q6hy9E7G2IurRnbyxEa4IHTYuOa4Z9JIkeAs9OAwVLq3gWzuRKh2KTzkZHW8TybPx7Tt2kdGYvW0add0rSrylJw0slash0wRnJRGRJgM8YZtSRq7U20add0gLkFYdViODbpwOO70fBBVTT5e6dcK0ZBfdpM0XrYZX2kxHZ4BvswyehC63IYmw0add0W8gdAUeeHH0slash0VlGpX5ml7hn0slash0m4jc7Rdwipbexpdz5qh80equals00secret0',
+                            page: page
+                        }, function(err, data, status) {
+                            if (!err) {
+                                if (data.value) {
+
+                                    document.getElementById('ajaxElement_1_703_success').innerHTML = data.html;
+                                    document.getElementById('ajaxElement_1_703_success').style.display = 'inline-block';
+                                } else {
+                                    document.getElementById('ajaxElement_1_703_failure').innerHTML = data.html;
+                                    document.getElementById('ajaxElement_1_703_failure').style.display = 'inline-block';
+                                }
+                            } else {
+
+                            }
+
+                        });
+                    }
+
+                    function stlGetPageajaxElement_1_703() {
+                        var page = 1;
+                        var queryString = document.location.search;
+                        if (queryString && queryString.length > 1) {
+                            queryString = queryString.substring(1);
+                            var arr = queryString.split('&');
+                            for (var i = 0; i < arr.length; i++) {
+                                var item = arr[i];
+                                var arr2 = item.split('=');
+                                if (arr2 && arr2.length == 2) {
+                                    if (arr2[0] === 'page') {
+                                        page = parseInt(arr2[1]);
+                                    }
+                                }
+                            }
+                        }
+                        return page;
+                    }
+
+                    stlDynamicajaxElement_1_703(stlGetPageajaxElement_1_703());
+
+                    function stlRedirectajaxElement_1_703(page) {
+                        var queryString = document.location.search;
+                        var parameters = '';
+                        if (queryString && queryString.length > 1) {
+                            queryString = queryString.substring(1);
+
+                            var arr = queryString.split('&');
+                            for (var i = 0; i < arr.length; i++) {
+                                var item = arr[i];
+                                var arr2 = item.split('=');
+                                if (arr2 && arr2.length == 2) {
+                                    if (arr2[0] !== 'page') {
+                                        parameters += item + '&';
+                                    }
+                                }
+                            }
+                        }
+                        parameters += 'page=' + page;
+                        location.href = location.protocol + '//' + location.host + location.pathname + location.hash + '?' + parameters;
+                    }
+                </script>
+
+            </div>
+            <div class="head-btn visible-lg">
+                <a href="/sethome.html" target="_blank" data-toggle="tooltip" data-tip-class="tooltip-info" data-placement="bottom" title="设为首页"><i class="fa fa-home"></i></a>
+                <a href="javascript:;" class="customize" data-toggle="tooltip" data-tip-class="tooltip-info" data-placement="bottom" title="自定义模式"><i class="fa fa-cog"></i></a>
+                <a href="javascript:;" class="theme" data-toggle="tooltip" data-tip-class="tooltip-info" data-placement="bottom" title="更换主题"><i class="fa fa-image"></i></a>
+            </div>
+            <button class="nav-btn visible-xs visible-sm">
+                <span class="icon-line top"></span>
+                <span class="icon-line middle"></span>
+                <span class="icon-line bottom"></span>
+            </button>
+            <div class="mobile-user visible-xs visible-sm">
+
+                <span id="ajaxElement_2_704_loading"></span>
+                <span id="ajaxElement_2_704_success" style="display: none"></span>
+                <span id="ajaxElement_2_704_failure" style="display: none"></span>
+                <script type="text/javascript" language="javascript">
+                    function stlDynamicajaxElement_2_704(page) {
+                        document.getElementById('ajaxElement_2_704_loading').style.display = 'inline-block';
+                        document.getElementById('ajaxElement_2_704_success').style.display = 'none';
+                        document.getElementById('ajaxElement_2_704_failure').style.display = 'none';
+
+                        stlClient.post('/api/sys/stl/actions/if?' + StlClient.getQueryString(), {
+                            value: '7ZNeUmMAG5GYfANbTQyniPqfGj6KbS9bQE851UDrCPV8jcKpGK7RQASOJqZA9FFIvU7wxy2VYpyETFw8Cs0add0q8TyvPZLhHIlILhIO89Na9GJqfxYZ0add0oIn50add0gfogCHPYJMs9QXHYRhuSW0slash0YYYFW1EdgsIT1zsab7YRPKB0vix8hDRDW2hzRUVap1o0aZcKRunM0kSR0slash0UwJJCGLrnv5eqmo2n61DtS0slash0LT8h1zHFHjm14Fx0HbNACK0add0tTdsWGpO4G0slash0Kb0add0059d4keKXY5Kt7sP3wJEWGQbkvm1wFrhpnvTzsX6C3e0slash0bFhWjU1wPS1eOUIqy9i0add007khGnyu0add02f0slash0x1qvojf22uCng92nEt8ysGAoeaaKDMPLqqsXuj5fmvc0slash0u0slash0iJH43c9ImwT4j39wM32e4E1IkpBuT131UWZam0add0Oh0slash0c5X2ouObWMsTkrDa40slash0DXfpCn1keCfkWH0add07n0KijK3m0Shn1ZsQaZt0slash0F9dOjJZMdh1kGWiMlNVw1fLY7xT9TBSM35ClbqAbg7ha8cPJBwXt0add0H2qSBeRrDTUxwxXCWM10add0f6ihA4zZP6Vc1va3gXPjafpj7V6pppYi5K3dWH0add0t0slash02mx0f8ZNJMmabUuxuHudPT0slash0ooqtBbAX0add0l0W4PnhFVTikb2xYv8hqieI0add0xGDCjke9p3pN5yI0g3kUBHW6WDFUNnWZJbPoAeHbmPbxjnAReD7AixOHz0DHvVtqfjT9iXIF3ufBaaIh42pNH1VEVKcVjJ0WOpt7qiGfGp2cLJicheXCAuWO0slash0Tn8PwlM5CkRa0add06Le1jEcGRQu830slash0xVipCHRtMDgq8Etao0EqpsJVTwYx4k0add0dXm5ufEtCVcF8Z1uf3m8YDR1qTYadpw18xesai4kwykN2RPGDgmyNrHZWoT7gAyR3Ou5r8JM3ySs4pSEJNGo4DZwAsp3GoFB1xV20add0aSoGsVI79i0add0TSPcfi30DNxtC6YejNsdq9ZEOfUXQHsiYPDrjDdbQGC8lxd7f4E16nTJQT4pFDYHYbZYHwUXCkbKofYrBUrfc5Yq15uzlcN8LPmYlpLzWBOrdohqBGnAoQty3IkCRcHpuzaDsG6ktKBw0slash0MKagWRGWSsuOrYUruUkSZws2rQmBFdeuaKG00add0biijl0bFk0v7zrXR4yfQEK0nzsaYGQsAqd9rF7yzM8M91n30slash02y0igfvkAN9ZWY0slash04EniBXwR0secret0',
+                            page: page
+                        }, function(err, data, status) {
+                            if (!err) {
+                                if (data.value) {
+
+                                    document.getElementById('ajaxElement_2_704_success').innerHTML = data.html;
+                                    document.getElementById('ajaxElement_2_704_success').style.display = 'inline-block';
+                                } else {
+                                    document.getElementById('ajaxElement_2_704_failure').innerHTML = data.html;
+                                    document.getElementById('ajaxElement_2_704_failure').style.display = 'inline-block';
+                                }
+                            } else {
+
+                            }
+
+                        });
+                    }
+
+                    function stlGetPageajaxElement_2_704() {
+                        var page = 1;
+                        var queryString = document.location.search;
+                        if (queryString && queryString.length > 1) {
+                            queryString = queryString.substring(1);
+                            var arr = queryString.split('&');
+                            for (var i = 0; i < arr.length; i++) {
+                                var item = arr[i];
+                                var arr2 = item.split('=');
+                                if (arr2 && arr2.length == 2) {
+                                    if (arr2[0] === 'page') {
+                                        page = parseInt(arr2[1]);
+                                    }
+                                }
+                            }
+                        }
+                        return page;
+                    }
+
+                    stlDynamicajaxElement_2_704(stlGetPageajaxElement_2_704());
+
+                    function stlRedirectajaxElement_2_704(page) {
+                        var queryString = document.location.search;
+                        var parameters = '';
+                        if (queryString && queryString.length > 1) {
+                            queryString = queryString.substring(1);
+
+                            var arr = queryString.split('&');
+                            for (var i = 0; i < arr.length; i++) {
+                                var item = arr[i];
+                                var arr2 = item.split('=');
+                                if (arr2 && arr2.length == 2) {
+                                    if (arr2[0] !== 'page') {
+                                        parameters += item + '&';
+                                    }
+                                }
+                            }
+                        }
+                        parameters += 'page=' + page;
+                        location.href = location.protocol + '//' + location.host + location.pathname + location.hash + '?' + parameters;
+                    }
+                </script>
+
+            </div>
+            <div id="tow-nav">
+
+                <div class="tow-nav-item">
+                    <a class="item-img" href="/web.html">前端开发</a>
+                    <ul>
+
+                        <li><a target="_blank" href="/web.html#row-1">视频教程</a></li>
+
+                        <li><a target="_blank" href="/web.html#row-2">在线学习</a></li>
+
+                        <li><a target="_blank" href="/web.html#row-3">碎片学习</a></li>
+
+                        <li><a target="_blank" href="/web.html#row-4">学习工具</a></li>
+
+                        <li><a target="_blank" href="/web.html#row-5">WEB公共库</a></li>
+
+                        <li><a target="_blank" href="/web.html#row-6">前端组织</a></li>
+
+                        <li><a target="_blank" href="/web.html#row-7">社区/论坛</a></li>
+
+                        <li><a target="_blank" href="/web.html#row-8">UI 框架</a></li>
+
+                        <li><a target="_blank" href="/web.html#row-9">JS 框架</a></li>
+
+                        <li><a target="_blank" href="/web.html#row-10">前端插件</a></li>
+
+                        <li><a target="_blank" href="/web.html#row-11">移动框架</a></li>
+
+                        <li><a target="_blank" href="/web.html#row-12">预处理器</a></li>
+
+                        <li><a target="_blank" href="/web.html#row-13">字体图标</a></li>
+
+                        <li><a target="_blank" href="/web.html#row-14">构建工具</a></li>
+
+                        <li><a target="_blank" href="/web.html#row-15">模块加载</a></li>
+
+                        <li><a target="_blank" href="/web.html#row-16">包管理器</a></li>
+
+                        <li><a target="_blank" href="/web.html#row-17">模板引擎</a></li>
+
+                        <li><a target="_blank" href="/web.html#row-18">游戏引擎</a></li>
+
+                        <li><a target="_blank" href="/web.html#row-19">代码高亮</a></li>
+
+                        <li><a target="_blank" href="/web.html#row-20">代码托管</a></li>
+
+                        <li><a target="_blank" href="/web.html#row-21">博客系统</a></li>
+
+                        <li><a target="_blank" href="/web.html#row-22">域名/服务器</a></li>
+
+                        <li><a target="_blank" href="/web.html#row-23">辅助工具</a></li>
+
+                        <li><a target="_blank" href="/web.html#row-24">站长工具</a></li>
+
+                        <li><a target="_blank" href="/web.html#row-25">图片素材</a></li>
+
+                        <li><a target="_blank" href="/web.html#row-26">精选酷站</a></li>
+
+                    </ul>
+                </div>
+
+                <div class="tow-nav-item">
+                    <a class="item-img" href="/ui.html">界面设计</a>
+                    <ul>
+
+                        <li><a target="_blank" href="/ui.html#row-1">学习教程</a></li>
+
+                        <li><a target="_blank" href="/ui.html#row-2">灵感采集</a></li>
+
+                        <li><a target="_blank" href="/ui.html#row-3">界面交互</a></li>
+
+                        <li><a target="_blank" href="/ui.html#row-13">设计规范</a></li>
+
+                        <li><a target="_blank" href="/ui.html#row-4">在线工具</a></li>
+
+                        <li><a target="_blank" href="/ui.html#row-5">icon图标</a></li>
+
+                        <li><a target="_blank" href="/ui.html#row-6">设计素材</a></li>
+
+                        <li><a target="_blank" href="/ui.html#row-7">图库素材</a></li>
+
+                        <li><a target="_blank" href="/ui.html#row-8">颜色搭配</a></li>
+
+                        <li><a target="_blank" href="/ui.html#row-12">渐变配色</a></li>
+
+                        <li><a target="_blank" href="/ui.html#row-9">字体字形</a></li>
+
+                        <li><a target="_blank" href="/ui.html#row-10">漫画插画</a></li>
+
+                        <li><a target="_blank" href="/ui.html#row-11">设计团队</a></li>
+
+                        <li><a target="_blank" href="/ui.html#row-14">社区交流</a></li>
+
+                        <li><a target="_blank" href="/ui.html#row-15">酷站集合</a></li>
+
+                    </ul>
+                </div>
+
+                <div class="tow-nav-item">
+                    <a class="item-img" href="/cg.html">影视后期</a>
+                    <ul>
+
+                        <li><a target="_blank" href="/cg.html#row-1">学习教程</a></li>
+
+                        <li><a target="_blank" href="/cg.html#row-2">特效动画</a></li>
+
+                        <li><a target="_blank" href="/cg.html#row-3">资讯交流</a></li>
+
+                        <li><a target="_blank" href="/cg.html#row-4">软件插件</a></li>
+
+                        <li><a target="_blank" href="/cg.html#row-5">摄影摄像</a></li>
+
+                        <li><a target="_blank" href="/cg.html#row-6">素材资源</a></li>
+
+                        <li><a target="_blank" href="/cg.html#row-7">录屏工具</a></li>
+
+                        <li><a target="_blank" href="/cg.html#row-8">学习论坛</a></li>
+
+                        <li><a target="_blank" href="/cg.html#row-9">求职招聘</a></li>
+
+                        <li><a target="_blank" href="/cg.html#row-10">渲染平台</a></li>
+
+                        <li><a target="_blank" href="/cg.html#row-11">兼职外包</a></li>
+
+                    </ul>
+                </div>
+
+                <div class="tow-nav-item">
+                    <a class="item-img" href="/office.html">日常办公</a>
+                    <ul>
+
+                        <li><a target="_blank" href="/office.html#row-1">热门推荐</a></li>
+
+                        <li><a target="_blank" href="/office.html#row-2">效率资源</a></li>
+
+                        <li><a target="_blank" href="/office.html#row-13">办公软件</a></li>
+
+                        <li><a target="_blank" href="/office.html#row-3">技能提升</a></li>
+
+                        <li><a target="_blank" href="/office.html#row-4">在线工具</a></li>
+
+                        <li><a target="_blank" href="/office.html#row-5">团队协作</a></li>
+
+                        <li><a target="_blank" href="/office.html#row-6">电子邮箱</a></li>
+
+                        <li><a target="_blank" href="/office.html#row-7">文案策划</a></li>
+
+                        <li><a target="_blank" href="/office.html#row-8">文档模板</a></li>
+
+                        <li><a target="_blank" href="/office.html#row-9">工作兼职</a></li>
+
+                        <li><a target="_blank" href="/office.html#row-10">企业信息</a></li>
+
+                        <li><a target="_blank" href="/office.html#row-10">合同/范文</a></li>
+
+                        <li><a target="_blank" href="/office.html#row-11">思维导图</a></li>
+
+                        <li><a target="_blank" href="/office.html#row-12">文件转换</a></li>
+
+                        <li><a target="_blank" href="/office.html#row-28">工作/私单</a></li>
+
+                        <li><a target="_blank" href="/office.html#row-27">新闻资讯</a></li>
+
+                        <li><a target="_blank" href="/office.html#row-29">应用程序</a></li>
+
+                        <li><a target="_blank" href="/office.html#row-14">政府网站</a></li>
+
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="not_operational">
+            <!--自定义模式-->
+            <div class="customize-mode-tips">
+                <div class="customize-switch">
+                    <a href="javascript:;" class="close-customize"><i class="fa fa-times-circle" aria-hidden="true"></i>退 出</a>
+                </div>
+            </div>
+            <div class="customize-mode-panel">
+                <h4>自 / 定 / 义 / 模 / 式</h4>
+                <ul class="customize-mode-ul">
+                    <li id="local-save">本 地 保 存</li>
+                    <li id="server-save">云 端 保 存</li>
+                    <li id="sync-data">数 据 同 步</li>
+                    <li id="restore-data">恢 复 默 认</li>
+                    <li id="set-title">隐 藏 标 题</li>
+                </ul>
+            </div>
+        </div>
+    </header>
+    <div id="content" class="default-bg">
+        <!--内容-->
+        <div class="main-index">
+            <div class="container content-box">
+                <section class="sousuo">
+                    <div class="search">
+                        <div class="search-box">
+                            <span class="search-icon" style="background: url(&amp;#x27;img/search_icon.png&amp;#x27;)"></span>
+                            <input type="text" id="txt" class="search-input" placeholder="请输入关键字，按回车 / Enter 搜索" autocomplete="off">
+                            <button class="search-btn" id="search-btn"><i class="fa fa-search"></i></button>
+                        </div>
+                        <!-- 搜索热词 -->
+                        <div class="box search-hot-text" id="box" style="display: none">
+                            <ul></ul>
+                        </div>
+                        <!-- 搜索引擎 -->
+                        <div class="search-engine">
+                            <div class="search-engine-head">
+                                <strong class="search-engine-tit">选择您的默认搜索引擎：</strong>
+                                <div class="search-engine-tool">搜索热词： <span id="hot-btn"></span></div>
+                            </div>
+                            <ul class="search-engine-list">
+                            </ul>
+                        </div>
+
+                    </div>
+                </section>
+                <section class="link-list-item" id="link-list-item">
+                    <div class="container-fluid">
+                        <div class="row">
+
+                            <div class="col-md-4 col-sm-6 i-link-box">
+                                <div class="row">
+                                    <div class="col-xs-12"><strong class="link-list-tit" id="">常用 · 工作</strong><input class="edit-category"></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl00_967" target="_blank" href="https://translate.google.cn/">Google 翻译</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl01_966" target="_blank" href="http://index.baidu.com/">百度指数</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl02_965" target="_blank" href="https://union.115.com/?ac=space_seal_list&amp;share_code=9d7e0cefcdb0680fc480caea2d8a5082">115网盘会员</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl03_964" target="_blank" href="http://dict.youdao.com/">有道词典</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl04_963" target="_blank" href="https://www.yinxiang.com/">印象笔记</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl05_962" target="_blank" href="https://mail.qq.com/">QQ邮箱</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl06_961" target="_blank" href="https://wx.qq.com/">网页版微信</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl07_960" target="_blank" href="http://cn.bing.com/">必应</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl08_959" target="_blank" href="https://www.baidu.com/">百度</a></div>
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 col-sm-6 i-link-box">
+                                <div class="row">
+                                    <div class="col-xs-12"><strong class="link-list-tit" id="">常用 · 社交</strong><input class="edit-category"></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl00_968" target="_blank" href="http://weibo.com/">微博</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl01_970" target="_blank" href="https://www.zhihu.com/">知乎</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl02_973" target="_blank" href="https://www.douban.com/">豆瓣</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl03_972" target="_blank" href="http://tieba.baidu.com/index.html">百度贴吧</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl04_969" target="_blank" href="http://qzone.qq.com/">QQ空间</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl05_971" target="_blank" href="http://www.jianshu.com/">简书</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl06_976" target="_blank" href="http://www.guokr.com/">果壳</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl07_975" target="_blank" href="https://www.v2ex.com">V2EX</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl08_974" target="_blank" href="http://www.hupu.com/">虎扑</a></div>
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 col-sm-6 i-link-box">
+                                <div class="row">
+                                    <div class="col-xs-12"><strong class="link-list-tit" id="">常用 · 生活</strong><input class="edit-category"></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl00_985" target="_blank" href="http://www.qyer.com/">穷游</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl01_984" target="_blank" href="http://www.ctrip.com/">携程</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl02_983" target="_blank" href="http://www.qunar.com/">去哪儿</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl03_982" target="_blank" href="http://ganji.com/">赶集网</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl04_981" target="_blank" href="http://58.com/">58同城</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl05_980" target="_blank" href="https://www.ele.me/">饿了么</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl06_979" target="_blank" href="https://nuomi.com/">百度糯米</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl07_978" target="_blank" href="http://www.dianping.com/">大众点评</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl08_977" target="_blank" href="http://gz.meituan.com/">美团</a></div>
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 col-sm-6 i-link-box">
+                                <div class="row">
+                                    <div class="col-xs-12"><strong class="link-list-tit" id="">视频 · 音乐</strong><input class="edit-category"></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl00_991" target="_blank" href="http://music.163.com/">网易云音乐</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl01_992" target="_blank" href="https://y.qq.com/">QQ音乐</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl02_994" target="_blank" href="http://www.yinyuetai.com/">音悦台</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl03_993" target="_blank" href="http://www.xiami.com/">虾米音乐</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl04_990" target="_blank" href="https://www.bilibili.com/">哔哩哔哩</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl05_989" target="_blank" href="https://v.qq.com/">腾讯视频</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl06_988" target="_blank" href="http://tv.sohu.com/">搜狐视频</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl07_987" target="_blank" href="http://www.iqiyi.com/">爱奇艺</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl08_986" target="_blank" href="http://www.youku.com/">优酷</a></div>
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 col-sm-6 i-link-box">
+                                <div class="row">
+                                    <div class="col-xs-12"><strong class="link-list-tit" id="">消费 · 购物</strong><input class="edit-category"></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl00_995" target="_blank" href="https://www.taobao.com/">淘宝</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl01_996" target="_blank" href="https://www.tmall.com/">天猫</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl02_997" target="_blank" href="https://www.jd.com/">京东</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl03_1003" target="_blank" href="https://1688.com/">1688</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl04_1002" target="_blank" href="http://www.mi.com/">小米网</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl05_1001" target="_blank" href="http://www.yhd.com/">一号店</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl06_1000" target="_blank" href="http://www.vip.com/">唯品会</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl07_999" target="_blank" href="http://www.dangdang.com/">当当</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl08_998" target="_blank" href="http://z.cn/">亚马逊</a></div>
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 col-sm-6 i-link-box">
+                                <div class="row">
+                                    <div class="col-xs-12"><strong class="link-list-tit" id="">资讯 · 新闻</strong><input class="edit-category"></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl00_1012" target="_blank" href="http://www.qdaily.com/">好奇日报</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl01_1011" target="_blank" href="http://www.tiexue.net/">铁血网</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl02_1010" target="_blank" href="http://www.autohome.com.cn/">汽车之家</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl03_1009" target="_blank" href="http://www.people.com.cn/">人民网</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl04_1008" target="_blank" href="http://www.sohu.com/">搜狐</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl05_1007" target="_blank" href="http://www.163.com/">网易</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl06_1006" target="_blank" href="http://news.baidu.com/">百度新闻</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl07_1005" target="_blank" href="http://news.qq.com/">腾讯</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl08_1004" target="_blank" href="http://www.sina.com.cn/">新浪</a></div>
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 col-sm-6 i-link-box">
+                                <div class="row">
+                                    <div class="col-xs-12"><strong class="link-list-tit" id="">工作 · 求职</strong><input class="edit-category"></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl00_1021" target="_blank" href="https://www.51job.com/">前程无忧</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl01_1020" target="_blank" href="http://www.zhaopin.com/">智联招聘</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl02_1019" target="_blank" href="http://cv.qiaobutang.com/">乔布堂</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl03_1018" target="_blank" href="https://www.jianzhimao.com/">兼职猫</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl04_1017" target="_blank" href="http://job.csdn.net/">庞果网</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl05_1016" target="_blank" href="http://www.neitui.me/">内推网</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl06_1015" target="_blank" href="https://www.dajie.com/">大街</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl07_1014" target="_blank" href="https://www.liepin.com/">猎聘</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl08_1013" target="_blank" href="https://www.lagou.com/">拉勾</a></div>
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 col-sm-6 i-link-box">
+                                <div class="row">
+                                    <div class="col-xs-12"><strong class="link-list-tit" id="">娱乐 · 游戏</strong><input class="edit-category"></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl00_1030" target="_blank" href="http://bbs.ngacn.cc/">NGA</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl01_1029" target="_blank" href="http://www.3dmgame.com/">3DM</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl02_1028" target="_blank" href="http://www.gamersky.com/">游民星空</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl03_1027" target="_blank" href="http://www.52pk.com/">52pk</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl04_1026" target="_blank" href="http://www.178.com/">178</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl05_1025" target="_blank" href="http://www.4399.com/">4399</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl06_1024" target="_blank" href="http://www.tgbus.com/">电玩巴士</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl07_1023" target="_blank" href="https://www.17173.com/">17173</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl08_1022" target="_blank" href="http://www.duowan.com/">多玩</a></div>
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 col-sm-6 i-link-box">
+                                <div class="row">
+                                    <div class="col-xs-12"><strong class="link-list-tit" id="">金融 · 银行</strong><input class="edit-category"></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl00_1039" target="_blank" href="http://bank.pingan.com/">平安银行</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl01_1038" target="_blank" href="http://www.cmbc.com.cn/">民生银行</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl02_1037" target="_blank" href="http://www.cgbchina.com.cn/">广发银行</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl03_1036" target="_blank" href="http://www.bankcomm.com/BankCommSite/default.shtml">交通银行</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl04_1035" target="_blank" href="http://www.boc.cn/">中国银行</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl05_1034" target="_blank" href="http://www.abchina.com/cn/">农业银行</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl06_1033" target="_blank" href="http://www.ccb.com/cn/home/indexv3.html">建设银行</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl07_1032" target="_blank" href="http://www.icbc.com.cn/icbc/">工商银行</a></div>
+
+                                    <div class="col-xs-4"><a class="link-list-a" id="ctl08_1031" target="_blank" href="http://www.cmbchina.com/">招商银行</a></div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <!-- 对话框HTML -->
+            <div class="modal fade" id="myModal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
+                            <h4 class="modal-title"><i class="fa fa-pencil"></i>自定义链接</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="input-control has-icon-left">
+                                <input id="inputAccountExample1" type="text" class="form-control" placeholder="网址名称">
+                                <label for="inputAccountExample1" class="input-control-icon-left"><i class="fa fa-font"></i></label>
+                            </div>
+                            <div class="input-control has-icon-left" style="margin-top: 15px">
+                                <input id="inputAccountExample2" type="text" class="form-control" placeholder="请输入网址，注意网址前面要加上http://">
+                                <label for="inputAccountExample1" class="input-control-icon-left"><i class="fa fa-link"></i></label>
+                            </div>
+                            <div class="modal-text">
+                                <p class="text-red">链接格式：http://xxx.com、https://xxx.com</p>
+                                <p><i class="fa fa-info-circle"></i>本地保存数据是临时存储在本地电脑上，数据丢失无法找回；若需永久储存数据，请使用云端保存</p>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">确 定</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a href="/sitemap.html" style="position: absolute; left: -9999px;opacity:0">网站地图</a>
+        <!--主题面板-->
+        <div class="theme-panel">
+            <div class="theme-panel-bg">
+                <div class="theme-panel-header">
+                    <div class="theme-panel-type pull-left">选择皮肤</div>
+                    <div class="dialog-control pull-right"><i class="fa fa-close" id="cancel-x"></i></div>
+                </div>
+                <div class="theme-panel-content">
+                    <ul class="wrapper-one">
+                        <li class="active">
+                            <img src="img/default-bg.png">
+                            <p>默认主题</p>
+                            <i class="fa fa-check-circle-o"></i>
+                        </li>
+                        <li>
+                            <img src="img/bg1-bg.jpeg">
+                            <p>护眼小花朵</p>
+                            <i class="fa fa-check-circle-o"></i>
+                        </li>
+                        <li>
+                            <img src="img/bg2-bg.jpeg">
+                            <p>自由女神像</p>
+                            <i class="fa fa-check-circle-o"></i>
+                        </li>
+                        <li>
+                            <img src="img/bg3-bg.jpeg">
+                            <p>暖色雪山</p>
+                            <i class="fa fa-check-circle-o"></i>
+                        </li>
+                        <li>
+                            <img src="img/bg4-bg.jpeg">
+                            <p>绿色高原</p>
+                            <i class="fa fa-check-circle-o"></i>
+                        </li>
+                        <li>
+                            <img src="img/bg5-bg.jpeg">
+                            <p>卡通萝莉</p>
+                            <i class="fa fa-check-circle-o"></i>
+                        </li>
+                        <li>
+                            <img src="img/bg6-bg.jpeg">
+                            <p>淡蓝雪山</p>
+                            <i class="fa fa-check-circle-o"></i>
+                        </li>
+                        <li>
+                            <img src="img/bg7-bg.jpeg">
+                            <p>纯蓝天空</p>
+                            <i class="fa fa-check-circle-o"></i>
+                        </li>
+                    </ul>
+                    <ul class="wrapper-two">
+                        <li>
+                            <img src="img/auto_bg.png">
+                            <p>随机皮肤</p>
+                            <i class="fa fa-check-circle-o"></i>
+                        </li>
+                        <li>
+                            <img src="img/diy_bg.jpeg">
+                            <p>自定义皮肤</p>
+                            <i class="fa fa-check-circle-o"></i>
+                        </li>
+                    </ul>
+                    <div class="color-panel">
+                        <div class="color-panel-tips">
+                            <strong>自定义皮肤配置<a href="https://webjike.com/blog/1225/2654.html" target="_blank" title="自定义皮肤使用教程" style="color:#ffc107; margin-left: 10px;"><i class="fa fa-question-circle"></i></a></strong>
+                            <div class="color-panel-diy">
+                                <div class="image-url">图片地址：<input type="text"></div>
+                                标题颜色：<input type="text" id="title-color">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;文字颜色：<input type="text" id="text-color">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;背景颜色：<input type="text" id="bg-color">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="theme-panel-muen">
+                <button class="btn btn-lg" type="button" id="okay">保 存</button>
+                <button class="btn btn-lg" type="button" id="cancel">取 消</button>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="https://s11.cnzz.com/z_stat.php?id=1261855216&amp;web_id=1261855216"></script>
+    <!--[if lt IE 9]>
+    <script src="dist/lib/ieonly/html5shiv.js"></script>
+    <script src="dist/lib/ieonly/respond.js"></script>
+    <![endif]-->
+    <!-- jQuery (ZUI中的Javascript组件依赖于jQuery) -->
+    <!-- ZUI Javascript组件 -->
+    <script src="js/jquery.js"></script>
+    <script src="js/zui.js"></script>
+    <script src="js/index.min.js"></script>
+
+</body>
+
+</html>
